@@ -16,7 +16,7 @@ void step(double* const u1,  double* const u0,  const double dt,
 //---------------------------------------
 int main(){
 
-  const double tEnd = 5 ;
+  const double tEnd = 5;
   const double D = 1;
 
   const int N  = 200;
@@ -35,16 +35,22 @@ int main(){
   double* h;
   stringstream strm;
 
-  initialize(u0,dx,dt, xmin,N);
+  initialize(u0,dx,dt,xmin,N);
 
-  writeToFile(u0, "u_0", dx, xmin, N,t);
+  writeToFile(u0, "u_0", dx, xmin, N, t);
 
   cout << "Nk = " << Nk << endl;
 
   for(int i=1; i<=Na; i++)
   {
    for(int j=0; j<Nk; j++){
+    step(u1, u0, dt, dx, D, N);
 
+   	h = u0;
+   	u0 = u1;
+   	u1 = h;
+
+   	t+=dt;
 
    }
    strm.str("");
@@ -63,7 +69,9 @@ void step(double* const f1, double* const f0,
           const double dt, const double dx,
           const double D, const int N)
 {
-
+	for (int i=0; i<N; i++) {
+		f1[i] = f0[i] + D*dt/(dx*dx)*(f0[(i+1)%N] - 2*f0[i] + f0[(N+i-1)%N]);
+	}
 }
 //-----------------------------------------------
 void initialize(double* const u0, const double dx,
